@@ -111,6 +111,10 @@ var PfxEd = (function () {
     updateFunction.call(this);
   };
 
+  function setBackground () {
+    $("canvas").css("background", $("input[name=background]:checked").val());
+  }
+
   function setBoundaryAction () {
     boundaryAction = boundaryActions[$("input[name=boundaryAction]:checked").val()];
   }
@@ -254,6 +258,12 @@ var PfxEd = (function () {
           .append($("<input type='radio' name='boundaryAction' value='none' >None</input></br>"))
           .append($("<input type='radio' name='boundaryAction' value='destroy' >Destroy</input>"))
         )
+        .append($("<fieldset>")
+          .append($("<legend>Background</legend>"))
+          .append($("<input type='radio' name='background' value='black' checked >Black</input></br>"))
+          .append($("<input type='radio' name='background' value='white' >White</input></br>"))
+          .append($("<input type='radio' name='background' value='none' >None</input></br>"))
+        )
       )
       .append($("<div id='play-control'>")
         .append($('<button id="play-pause" class="control">play</button>'))
@@ -282,6 +292,9 @@ var PfxEd = (function () {
 
     setBoundaryAction();
     $("input[name=boundaryAction]").change(setBoundaryAction);
+
+    setBackground();
+    $("input[name=background]").change(setBackground);
 
     width = parseInt($("#ui").css("width"));
     width = Math.min(width, 600);
