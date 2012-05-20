@@ -260,8 +260,8 @@ var PfxEd = (function () {
         )
         .append($("<fieldset>")
           .append($("<legend>Background</legend>"))
-          .append($("<input type='radio' name='background' value='white' checked >White</input></br>"))
-          .append($("<input type='radio' name='background' value='black' >Black</input></br>"))
+          .append($("<input type='radio' name='background' value='white' >White</input></br>"))
+          .append($("<input type='radio' name='background' value='black' checked >Black</input></br>"))
           .append($("<input type='radio' name='background' value='none' >None</input></br>"))
         )
       )
@@ -297,14 +297,15 @@ var PfxEd = (function () {
     canvas = $("canvas").get()[0];
 
     ctx = canvas.getContext('2d');
-
-    showWelcomeText();
+    ctx.fillStyle="rgba(255,255,255,1)";
 
     setBoundaryAction();
     $("input[name=boundaryAction]").change(setBoundaryAction);
 
     setBackground();
     $("input[name=background]").change(setBackground);
+
+    showWelcomeText();
 
     $("#play-pause").click(togglePlay);
     $("#stop").click(stop);
