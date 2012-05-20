@@ -74,9 +74,9 @@ var PfxEd = (function () {
     this.y = 0;
     this.xvel = 0;
     this.yvel = 0;
-    this.r = 0;
-    this.g = 0;
-    this.b = 0;
+    this.r = 255;
+    this.g = 255;
+    this.b = 255;
     this.a = 1;
     this.index = null;
 
