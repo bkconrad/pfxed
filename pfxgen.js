@@ -1,55 +1,72 @@
 var PfxEd = (function () {
-  var STOPPED = -1
-  , PAUSED = 0
-  , PLAYING = 1
-  , state = undefined
-  , canvas = undefined
-  , ctx = undefined
-  , width = undefined
-  , height = undefined
-  , mouseX = undefined
-  , mouseY = undefined
-  , drawFunction = undefined
-  , initFunction = undefined
-  , updateFunction = undefined
-  , updateTimeout = undefined
-  , uiFocus = false
-  , startingParticles = 0
-  , maxParticles = 1000
-  , emitFrequency = 100
-  , particles = []
-  , dampening = 1
-  , lastRun = undefined
-  , lastEmit = undefined
-  , requestAnim = 
-    window.requestAnimationFrame       ||
-    window.webkitRequestAnimationFrame ||
-    function (cb) { return setTimeout(cb, 1000/60); }
-  , clearAnim =
-    window.cancelAnimationFrame       ||
-    window.webkitCancelAnimationFrame ||
-    function (id) { return clearTimeout(id); }
-  , Particle = undefined
-  , boundaryAction = undefined
-  , boundaryActions = {
-      bounce: function () {
-        if (this.x < 0 || this.x > width)
-          this.xvel *= -dampening;
+  var
+    // rendering & simulation state
+      STOPPED = -1
+    , PAUSED = 0
+    , PLAYING = 1
+    , state
+    , uiFocus = false
+    , updateTimeout
 
-        if (this.y < 0 || this.y > height)
-          this.yvel *= -dampening;
+    // Particle class
+    , Particle
+    , particles = []
+
+    // canvas & context data
+    , canvas
+    , ctx
+    , width
+    , height
+    , mouseX
+    , mouseY
+
+    // user simulation functions
+    , drawFunction
+    , initFunction
+    , updateFunction
+
+    // particle emission control
+    , startingParticles = 0
+    , maxParticles = 1000
+    , emitFrequency = 100
+    , lastEmit
+    , lastRun
+
+    // physics constants
+    , dampening = 1
+
+    // boundary handling
+    , boundaryAction
+    , boundaryActions = {
+        bounce: function () {
+          if (this.x < 0 || this.x > width)
+            this.xvel *= -dampening;
+
+          if (this.y < 0 || this.y > height)
+            this.yvel *= -dampening;
+        }
+      , clip: function () {
+          this.x = Math.max(0, Math.min(this.x, width));
+          this.y = Math.max(0, Math.min(this.y, height));
+        }
+      , destroy: function () {
+          if (this.x < 0 || this.x > width || this.y < 0 || this.y > height)
+            this.drop();
+        }
+      , none: function () {
+        }
       }
-    , clip: function () {
-        this.x = Math.max(0, Math.min(this.x, width));
-        this.y = Math.max(0, Math.min(this.y, height));
-      }
-    , destroy: function () {
-        if (this.x < 0 || this.x > width || this.y < 0 || this.y > height)
-          this.drop();
-      }
-    , none: function () {
-      }
-    }
+
+    // animation shims
+    , requestAnim = 
+      window.requestAnimationFrame       ||
+      window.webkitRequestAnimationFrame ||
+      function (cb) { return setTimeout(cb, 1000/60); }
+
+    , clearAnim =
+      window.cancelAnimationFrame       ||
+      window.webkitCancelAnimationFrame ||
+      function (id) { return clearTimeout(id); }
   ;
 
   Particle = function () {
@@ -244,10 +261,19 @@ var PfxEd = (function () {
         .append($('<button id="restart" class="control">restart</button>'))
       )
       .append($("<div id='functions'>"))
-      .append($("<form>")
-        .append($('<textarea spellcheck="false" id="init-function">'))
-        .append($('<textarea spellcheck="false" id="draw-function">'))
-        .append($('<textarea spellcheck="false" id="update-function">'))
+      .append($("<form id='function-texts'>")
+        .append($('<fieldset>')
+          .append($("<legend>Init</legend>"))
+          .append($('<textarea spellcheck="false" id="init-function">'))
+        )
+        .append($('<fieldset>')
+          .append($("<legend>Draw</legend>"))
+          .append($('<textarea spellcheck="false" id="draw-function">'))
+        )
+        .append($('<fieldset>')
+          .append($("<legend>Update</legend>"))
+          .append($('<textarea spellcheck="false" id="update-function">'))
+        )
       )
     );
 
@@ -277,13 +303,13 @@ var PfxEd = (function () {
     $("#options").submit(function () { restart(); return false; });
 
     // add buttons for textarea toggling
-    var $textAreas = $("#ui textarea").get();
+    var $textAreas = $("#function-texts textarea").get();
     var $newElement;
     for (var e in $textAreas) {
       $newElement = $('<button id="' + $textAreas[e].id + '-button" class="function-button">' + $textAreas[e].id  + '</button>')
-      $newElement.get()[0].target = $textAreas[e].id;
+      $newElement.get()[0].target = $($textAreas[e]).parent();
       $("#functions").append($newElement);
-      $newElement.click(function () { $("#" + this.target).toggle(); return false; });
+      $newElement.click(function () { $(this.target).toggle(); return false; });
     }
   }
 
