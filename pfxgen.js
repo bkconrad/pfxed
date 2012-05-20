@@ -229,8 +229,8 @@ var PfxEd = (function () {
   }
 
   function mouseMoveHandler (ev) {
-    mouseX = ev.offsetX - canvas.offsetLeft;
-    mouseY = ev.offsetY - canvas.offsetTop;
+    mouseX = ev.pageX - canvas.offsetLeft;
+    mouseY = ev.pageY - canvas.offsetTop;
   }
 
   function showWelcomeText () {
