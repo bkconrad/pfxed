@@ -324,6 +324,9 @@ var PfxEd = (function () {
       $("#functions").append($newElement);
       $newElement.click(function () { $(this.target).toggle(); return false; });
     }
+
+    start();
+    run();
   }
 
   function destroy () {
