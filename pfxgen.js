@@ -148,6 +148,8 @@ function stop () {
   clear();
   clearAnim(updateTimeout);
 
+  showWelcomeText();
+
   particles = [];
   return false;
 }
@@ -186,6 +188,16 @@ function mouseMoveHandler (ev) {
   mouseY = ev.offsetY - canvas.offsetTop;
 }
 
+function showWelcomeText () {
+  var welcomeText = "Press \"play\" to begin";
+  ctx.font = "20px Arial"
+  ctx.fillText(
+    welcomeText,
+    (width - ctx.measureText(welcomeText).width)/2,
+    height/2
+  );
+}
+
 function init(element) {
   // build UI
   element.prepend($("<div id='ui'>")
@@ -218,6 +230,8 @@ function init(element) {
   canvas = $("canvas").get()[0];
 
   ctx = canvas.getContext('2d');
+
+  showWelcomeText();
 
   $("#play-pause").click(togglePlay);
   $("#stop").click(stop);
