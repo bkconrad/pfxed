@@ -42,6 +42,27 @@ function Particle () {
   initFunction.call(this);
 }
 
+var boundaryAction;
+var boundaryActions = {
+    bounce: function () {
+      if (this.x < 0 || this.x > width)
+        this.xvel *= -dampening;
+
+      if (this.y < 0 || this.y > height)
+        this.yvel *= -dampening;
+    }
+  , clip: function () {
+      this.x = Math.max(0, Math.min(this.x, width));
+      this.y = Math.max(0, Math.min(this.y, height));
+    }
+  , destroy: function () {
+      if (this.x < 0 || this.x > width || this.y < 0 || this.y > height)
+        this.drop();
+    }
+  , none: function () {
+    }
+};
+
 Particle.prototype.add = function () {
   particles.push(this);
   this.index = particles.length - 1;
@@ -65,13 +86,13 @@ Particle.prototype.updatePhysics = function () {
   this.x += this.xvel;
   this.y += this.yvel;
 
-  if (this.x < 0 || this.x > width)
-    this.xvel *= -dampening;
-
-  if (this.y < 0 || this.y > height)
-    this.yvel *= -dampening;
+  boundaryAction.call(this);
 
   updateFunction.call(this);
+}
+
+function setBoundaryAction () {
+  boundaryAction = boundaryActions[$("input[name=boundaryAction]:checked").val()];
 }
 
 function clear () {
@@ -206,6 +227,10 @@ function init(element) {
       .append($("<input id='maxParticles' type='text'>"))
       .append($("<label for='emitFrequency'>Emit Frequency</label>"))
       .append($("<input id='emitFrequency' type='text'>"))
+      .append($("<input type='radio' name='boundaryAction' value='bounce' checked >Bounce</input>"))
+      .append($("<input type='radio' name='boundaryAction' value='clip' >Clip</input>"))
+      .append($("<input type='radio' name='boundaryAction' value='none' >None</input>"))
+      .append($("<input type='radio' name='boundaryAction' value='destroy' >Destroy</input>"))
     )
     .append($("<div id='play-control'>")
       .append($('<button id="play-pause" class="control">play</button>'))
@@ -222,6 +247,9 @@ function init(element) {
 
   $("#emitFrequency").val(emitFrequency);
   $("#maxParticles").val(maxParticles);
+
+  setBoundaryAction();
+  $("input[name=boundaryAction]").change(setBoundaryAction);
 
   width = parseInt($("#ui").css("width"));
   width = Math.min(width, 600);
