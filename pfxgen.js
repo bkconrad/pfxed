@@ -188,7 +188,7 @@ function mouseMoveHandler (ev) {
 
 function init(element) {
   // build UI
-  element.append($("<div id='ui'>")
+  element.prepend($("<div id='ui'>")
     .append($("<form id='options'>")
       .append($("<label for='maxParticles'>Max Particles</label>"))
       .append($("<input id='maxParticles' type='text'>"))
