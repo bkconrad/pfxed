@@ -282,5 +282,9 @@ function init(element) {
     $("#functions").append($newElement);
     $newElement.click(function () { $("#" + this.target).toggle(); return false; });
   }
+}
 
+function destroy () {
+  $(document).unbind("keypress");
+  $(document).unbind("mousemove");
 }
