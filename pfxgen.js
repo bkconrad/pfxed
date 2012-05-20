@@ -337,5 +337,8 @@ var PfxEd = (function () {
   return {
       init: init
     , destroy: destroy
+    , start: start
+    , stop: stop
+    , run: run
   }
 })();
