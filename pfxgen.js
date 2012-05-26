@@ -228,9 +228,21 @@ var PfxEd = (function () {
     return false;
   }
 
+  function getPosition (el) {
+    var position = { left: el.offsetLeft, top: el.offsetTop },
+        parentPosition = { left: 0, top: 0 };
+
+    if (!!el.offsetParent) {
+      parentPosition = getPosition(el.offsetParent);
+    }
+    return { left: position.left + parentPosition.left,
+             top: position.top + parentPosition.top };
+  }
+
   function mouseMoveHandler (ev) {
-    mouseX = ev.pageX - canvas.offsetLeft;
-    mouseY = ev.pageY - canvas.offsetTop;
+    var pos = getPosition(canvas);
+    mouseX = ev.pageX - pos.left;
+    mouseY = ev.pageY - pos.top;
   }
 
   function showWelcomeText () {
