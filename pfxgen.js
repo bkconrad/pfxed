@@ -308,7 +308,14 @@ var PfxEd = (function () {
     );
 
     $("#emitFrequency").val(emitFrequency);
+    $("#emitFrequency").change(function () {
+      emitFrequency = $("#emitFrequency").val();
+    });
+
     $("#maxParticles").val(maxParticles);
+    $("#maxParticles").change(function () {
+      maxParticles = $("#maxParticles").val();
+    });
 
     width = parseInt($("#ui").css("width"));
     width = Math.min(width, 600);
