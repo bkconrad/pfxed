@@ -257,7 +257,7 @@ var PfxEd = (function () {
 
   function init (element) {
     // build UI
-    element.prepend($("<div id='ui'>")
+    element.append($("<div id='ui'>")
       .append($("<div id='play-control'>")
         .append($('<button id="play-pause" class="control">play</button>'))
         .append($('<button id="stop" class="control">stop</button>'))
@@ -313,7 +313,7 @@ var PfxEd = (function () {
     width = parseInt($("#ui").css("width"));
     width = Math.min(width, 600);
     height = width / 1.25;
-    element.prepend("<canvas width=\"" + width + "\" height=\"" + height + "\"></canvas>");
+    $('#ui').before("<canvas width=\"" + width + "\" height=\"" + height + "\"></canvas>");
     canvas = $("canvas").get()[0];
 
     ctx = canvas.getContext('2d');
