@@ -7,6 +7,8 @@ var PfxEd = (function () {
     , state
     , uiFocus = false
     , updateTimeout
+    // time since last frame in seconds
+    , frameTime
 
     // Particle class
     , Particle
@@ -103,8 +105,8 @@ var PfxEd = (function () {
   };
 
   Particle.prototype.updatePhysics = function () {
-    this.x += this.xvel;
-    this.y += this.yvel;
+    this.x += this.xvel * frameTime;
+    this.y += this.yvel * frameTime;
 
     boundaryAction.call(this);
 
@@ -125,6 +127,7 @@ var PfxEd = (function () {
 
   function run () {
     var now = new Date().getTime();
+    frameTime = (now - lastRun) / 1000;
     lastRun = lastRun || now;
     lastEmit = lastEmit || now;
     if (state <= PAUSED)
